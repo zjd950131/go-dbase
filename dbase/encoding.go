@@ -2,6 +2,7 @@ package dbase
 
 import (
 	"bytes"
+	"golang.org/x/text/encoding/simplifiedchinese"
 	"unicode/utf8"
 
 	"io"
@@ -28,11 +29,14 @@ func (c DefaultConverter) Decode(in []byte) ([]byte, error) {
 	if utf8.Valid(in) {
 		return in, nil
 	}
-	r := transform.NewReader(bytes.NewReader(in), c.encoding.NewDecoder())
+	r := transform.NewReader(bytes.NewReader(in), simplifiedchinese.GB18030.NewDecoder())
 	data, err := io.ReadAll(r)
 	if err != nil {
 		return nil, newError("dbase-encoding-decode-1", err)
 	}
+
+	return data, nil
+
 	return data, nil
 }
 
